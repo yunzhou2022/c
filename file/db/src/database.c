@@ -37,8 +37,7 @@ static int load_table_data() {
   int data_cnt = 0;
   while (1) {
     long offset = ftell(db.table);
-    if (fread(buff, db.getDataSize(), 1, db.table) == 0)
-      break;
+    if (fread(buff, db.getDataSize(), 1, db.table) == 0) break;
     p->next = getNewTableData(buff, offset);
     p = p->next;
     data_cnt++;
@@ -46,6 +45,24 @@ static int load_table_data() {
 
   printf("load data success: %d items\n", data_cnt);
   return data_cnt;
+}
+
+static void clear_table() {
+  struct table_data *p = db.head->next, *q;
+  while (p) {
+    q = p->next;
+    free(p->data);
+    free(p);
+    p = q;
+  }
+  return;
+}
+
+static void close_table() {
+  clear_table();
+  if (db.table == NULL) return;
+  fclose(db.table);
+  return;
 }
 
 static void open_table() {
@@ -70,8 +87,8 @@ static enum OP_TYPE choose_table() {
     printf("input : ");
     scanf("%d", &x);
   } while (x < 0 || x > table_cnt);
-  if (x == table_cnt)
-    return OP_END;
+  if (x == table_cnt) return OP_END;
+  close_table();
   tables[x].init_table(&db);
   open_table();
   return TABLE_USAGE;
@@ -90,20 +107,25 @@ static enum OP_TYPE table_usage() {
   } while (x < 0 || x > 5);
 
   switch (x) {
-  case 1:
-    return LIST_TABLE;
-  case 2:
-    return ADD_TABLE;
-  case 3:
-    return MODIFY_TABLE;
-  case 4:
-    return DELETE_TABLE;
+    case 1:
+      return LIST_TABLE;
+    case 2:
+      return ADD_TABLE;
+    case 3:
+      return MODIFY_TABLE;
+    case 4:
+      return DELETE_TABLE;
   }
   return CHOOSE_TABLE;
 }
 
 static enum OP_TYPE list_table() {
   printf("list %s table\n", db.name);
+  struct table_data *p = db.head->next;
+  while (p) {
+    db.printData(p->data);
+    p = p->next;
+  }
   return TABLE_USAGE;
 }
 static enum OP_TYPE add_table() {
@@ -121,21 +143,21 @@ static enum OP_TYPE modify_table() {
 
 static enum OP_TYPE run(enum OP_TYPE status) {
   switch (status) {
-  case CHOOSE_TABLE:
-    return choose_table();
-  case TABLE_USAGE:
-    return table_usage();
-  case LIST_TABLE:
-    return list_table();
-  case ADD_TABLE:
-    return add_table();
-  case MODIFY_TABLE:
-    return modify_table();
-  case DELETE_TABLE:
-    return delete_table();
-  default: {
-    printf("unknown status: %d\n", status);
-  } break;
+    case CHOOSE_TABLE:
+      return choose_table();
+    case TABLE_USAGE:
+      return table_usage();
+    case LIST_TABLE:
+      return list_table();
+    case ADD_TABLE:
+      return add_table();
+    case MODIFY_TABLE:
+      return modify_table();
+    case DELETE_TABLE:
+      return delete_table();
+    default: {
+      printf("unknown status: %d\n", status);
+    } break;
   }
   return OP_END;
 }

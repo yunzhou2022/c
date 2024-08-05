@@ -32,6 +32,7 @@ typedef struct Database {
   const char *table_file;
   struct table_data *head;
   size_t (*getDataSize)();
+  void(*printData)(void *);
 } Database;
 
 typedef void (*InitTable_T)(struct Database *);
