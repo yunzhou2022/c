@@ -7,6 +7,7 @@
 #ifndef DATABASE_H
 
 #define DATABASE_H
+#include <stdio.h>
 
 enum OP_TYPE {
   CHOOSE_TABLE,
@@ -19,8 +20,18 @@ enum OP_TYPE {
 };
 ;
 
+struct table_data {
+  void *data;
+  long offset;
+  struct table_data *next;
+};
+
 typedef struct Database {
   const char *name;
+  FILE *table;
+  const char *table_file;
+  struct table_data *head;
+  size_t (*getDataSize)();
 } Database;
 
 typedef void (*InitTable_T)(struct Database *);

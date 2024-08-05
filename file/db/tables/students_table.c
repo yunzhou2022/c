@@ -7,12 +7,25 @@
 #include "../include/database.h"
 
 static const char *table_name = "students";
+static const char *table_file = "tables/data/student_data.dat";
+
+typedef struct Student {
+  char name[20];
+  int age;
+  int class;
+  double height;
+} table_data;
+
+static size_t getDataSize(Database *db) { return sizeof(table_data); }
 
 static void init_table(Database *db) {
   db->name = table_name;
+  db->table_file = table_file;
+  db->table = NULL;
+  db->getDataSize = getDataSize;
+  db->head = NULL;
   return;
 }
-
 static __attribute__((constructor)) void __register_table() {
   register_table(table_name, init_table);
 }

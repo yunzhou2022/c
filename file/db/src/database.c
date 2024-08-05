@@ -7,6 +7,8 @@
 #include "../include/database.h"
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 struct TableInfo tables[100];
 
@@ -17,6 +19,43 @@ void register_table(const char *name, InitTable_T init) {
   tables[table_cnt].table_name = name;
   tables[table_cnt].init_table = init;
   table_cnt++;
+  return;
+}
+
+static struct table_data *getNewTableData(char *data, long offset) {
+  struct table_data *p = (struct table_data *)malloc(sizeof(struct table_data));
+
+  p->data = malloc(db.getDataSize());
+  memcpy(p->data, data, db.getDataSize()), p->offset = offset;
+  p->next = NULL;
+  return p;
+}
+
+static int load_table_data() {
+  char buff[db.getDataSize()];
+  struct table_data *p = db.head;
+  int data_cnt = 0;
+  while (1) {
+    long offset = ftell(db.table);
+    if (fread(buff, db.getDataSize(), 1, db.table) == 0)
+      break;
+    p->next = getNewTableData(buff, offset);
+    p = p->next;
+    data_cnt++;
+  }
+
+  printf("load data success: %d items\n", data_cnt);
+  return data_cnt;
+}
+
+static void open_table() {
+  db.table = fopen(db.table_file, "rb+");
+  if (db.table == NULL) {
+    printf("can't open file :%s\n", db.table_file);
+    exit(1);
+  }
+
+  load_table_data();
   return;
 }
 
@@ -31,8 +70,10 @@ static enum OP_TYPE choose_table() {
     printf("input : ");
     scanf("%d", &x);
   } while (x < 0 || x > table_cnt);
-  if (x == table_cnt) return OP_END;
+  if (x == table_cnt)
+    return OP_END;
   tables[x].init_table(&db);
+  open_table();
   return TABLE_USAGE;
 }
 static enum OP_TYPE table_usage() {
@@ -49,14 +90,14 @@ static enum OP_TYPE table_usage() {
   } while (x < 0 || x > 5);
 
   switch (x) {
-    case 1:
-      return LIST_TABLE;
-    case 2:
-      return ADD_TABLE;
-    case 3:
-      return MODIFY_TABLE;
-    case 4:
-      return DELETE_TABLE;
+  case 1:
+    return LIST_TABLE;
+  case 2:
+    return ADD_TABLE;
+  case 3:
+    return MODIFY_TABLE;
+  case 4:
+    return DELETE_TABLE;
   }
   return CHOOSE_TABLE;
 }
@@ -80,21 +121,21 @@ static enum OP_TYPE modify_table() {
 
 static enum OP_TYPE run(enum OP_TYPE status) {
   switch (status) {
-    case CHOOSE_TABLE:
-      return choose_table();
-    case TABLE_USAGE:
-      return table_usage();
-    case LIST_TABLE:
-      return list_table();
-    case ADD_TABLE:
-      return add_table();
-    case MODIFY_TABLE:
-      return modify_table();
-    case DELETE_TABLE:
-      return delete_table();
-    default: {
-      printf("unknown status: %d\n", status);
-    } break;
+  case CHOOSE_TABLE:
+    return choose_table();
+  case TABLE_USAGE:
+    return table_usage();
+  case LIST_TABLE:
+    return list_table();
+  case ADD_TABLE:
+    return add_table();
+  case MODIFY_TABLE:
+    return modify_table();
+  case DELETE_TABLE:
+    return delete_table();
+  default: {
+    printf("unknown status: %d\n", status);
+  } break;
   }
   return OP_END;
 }
