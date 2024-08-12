@@ -3,7 +3,7 @@
 int isPrime(int x, int base) {
   int n = x, a = 0;
   while (n) {
-    a = a * base + n % base;
+                 a = a * base + n % base;
     n = n / base;
   }
   return a == x;

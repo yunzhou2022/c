@@ -1,0 +1,9 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     '/Users/pupil/learn/c/euler/13'
+relocations:
+  - { offsetInCU: 0x26, offset: 0x26, size: 0x8, addend: 0x0, symName: __Z9transformPcPi, symObjAddr: 0x0, symBinAddr: 0x100003B94, symSize: 0x98 }
+  - { offsetInCU: 0x41, offset: 0x41, size: 0x8, addend: 0x0, symName: __Z9transformPcPi, symObjAddr: 0x0, symBinAddr: 0x100003B94, symSize: 0x98 }
+  - { offsetInCU: 0xA1, offset: 0xA1, size: 0x8, addend: 0x0, symName: __Z3addPiS_S_, symObjAddr: 0x98, symBinAddr: 0x100003C2C, symSize: 0x160 }
+  - { offsetInCU: 0x101, offset: 0x101, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x1F8, symBinAddr: 0x100003D8C, symSize: 0x1D4 }
+...
