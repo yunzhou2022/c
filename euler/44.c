@@ -1,39 +1,37 @@
-#include <inttypes.h>
+#include <math.h>
 #include <stdio.h>
 
-long long pentagonal(long long n) { return n * (3 * n - 1) / 2; }
+#define MAX_N 1000
 
-int isValid(long long val) {
-  long long s = 1, e = val, mid;
-  while (s <= e) {
-    mid = (s + e) >> 1;
-    long long temp = pentagonal(mid);
-    if (temp == val) {
+int p[MAX_N + 5] = {0};
+
+int isValid(int n) {
+  for (int i = 1; i < MAX_N; i++) {
+    if (n < p[i])
+      return 0;
+    if (n == p[i])
       return 1;
-    }
-    if (temp < val)
-      s = mid + 1;
-    else
-      e = mid - 1;
   }
-
   return 0;
 }
 
 int main() {
-  long long j = 1, ans = INT32_MAX;
-  while (pentagonal(j + 1) - pentagonal(j) < ans) {
-    j++;
-    for (int i = j - 1; i >= 1 && pentagonal(j) - pentagonal(i) < ans; i--) {
-      long long a = pentagonal(j), b = pentagonal(i);
-      if (!isValid(a - b))
+  for (int i = 1; i <= MAX_N; i++) {
+    p[i] = i * (3 * i - 1) / 2;
+  }
+
+  int res = 9999;
+  for (int i = 1; i < MAX_N; i++) {
+    for (int j = i + 1; j <= MAX_N; j++) {
+      if (!isValid(p[j] - p[i]) || !isValid(p[j] + p[i]))
         continue;
-      if (!isValid(a + b))
-        continue;
-      printf("%lld %lld\n", a, b);
-      ans = a - b;
+      int temp = p[j] - p[i];
+      if (temp < res)
+        res = temp;
     }
   }
-  printf("%lld\n", ans);
+
+  printf("%d\n", res);
+
   return 0;
 }

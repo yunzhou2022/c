@@ -1,30 +1,23 @@
-#include <math.h>
 #include <stdio.h>
 
-long long triangle(int i) { return i * (i + 1) / 2; }
+#define ll long long
 
-int getLen(long long val) {
-  int cnt = 0;
-  long long I = sqrt(val);
-  for (int i = 1; i <= I; i++) {
-    if (val % i == 0)
-      cnt += 2;
+ll getLen(ll n) {
+  int len = 0;
+  for (ll i = 1; i * i <= n; i++) {
+    if (n % i == 0) {
+      len += 2;
+    }
   }
-  if (I * I == val)
-    cnt--;
-
-  return cnt;
+  return len;
 }
 
-int main() {
-  for (int i = 1;; i++) {
-    long long num = triangle(i);
-    int len = getLen(num);
-    if (len <= 500)
-      continue;
-    printf("%lld\n", num);
-    break;
-  }
+ll sanJiao(ll i) { return (1 + i) * i / 2; }
 
+int main() {
+  ll i = 1;
+  while (getLen(sanJiao(i)) <= 500)
+    i++;
+  printf("%lld, %lld,  %lld\n", i, getLen(sanJiao(i)), sanJiao(i));
   return 0;
 }
