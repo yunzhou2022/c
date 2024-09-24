@@ -27,21 +27,21 @@ int main() {
       }
       break;
     case '}':
-      if (s.empty() || s.top() != '{') {
+      if (s.empty() || str[s.top()] != '{') {
         s.push(i);
       } else {
-        s.pop();
         match[s.top()] = i;
         match[i] = s.top();
+        s.pop();
       }
       break;
     case ']':
-      if (s.empty() || s.top() != '[') {
+      if (s.empty() || str[s.top()] != '[') {
         s.push(i);
       } else {
-        s.pop();
         match[s.top()] = i;
         match[i] = s.top();
+        s.pop();
       }
       break;
     }
