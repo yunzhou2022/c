@@ -47,10 +47,6 @@ ll calc(string s, ll l, ll r) {
     }
   }
 
-#ifdef DEBUG
-  cout << "pos: " << pos << "  signal: " << s[pos] << endl;
-#endif
-
   if (pos == -1) {
     ll res = 0;
     for (int i = l; i < r; i++) {
