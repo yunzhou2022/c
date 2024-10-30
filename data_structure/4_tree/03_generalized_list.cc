@@ -1,5 +1,7 @@
 #include <cstdlib>
 #include <iostream>
+#include <stack>
+#include <string>
 using namespace std;
 
 typedef struct Node {
@@ -94,11 +96,62 @@ void out() {
   cout << endl;
 }
 
+bool isNum(char c) { return c >= '0' && c <= '9'; }
+
+Node *deserialize() {
+  Node *root = nullptr;
+  stack<Node *> s;
+  Node *pre = nullptr;
+  bool isRchild = false;
+  for (int i = 0; i < len; i++) {
+    switch (buff[i]) {
+    case '(':
+      s.push(pre);
+      continue;
+    case ')':
+      pre = s.top();
+      s.pop();
+      continue;
+    case ',':
+      isRchild = true;
+      continue;
+    default:
+      break;
+    }
+    int j = i + 1;
+    for (; isNum(buff[j]); j++)
+      ;
+    int num = 0;
+    for (int k = i; k < j; k++) {
+      num = num * 10 + (buff[k] - '0');
+    }
+    i = j - 1;
+    cout << "num: " << num << " " << i << endl;
+    pre = getNewNode(num);
+    if (!root) {
+      root = pre;
+      continue;
+    }
+    if (isRchild) {
+      s.top()->rchild = pre;
+    } else {
+      s.top()->lchild = pre;
+    }
+    isRchild = false;
+  }
+  return root;
+}
+
 int main() {
+  srand(time(0));
   Node *root = getTree(5);
   pre(root);
   cout << endl;
   serialize(root);
   out();
+  cout << endl;
+  cout << "newRoot" << endl;
+  Node *newRoot = deserialize();
+  pre(newRoot);
   return 0;
 }
