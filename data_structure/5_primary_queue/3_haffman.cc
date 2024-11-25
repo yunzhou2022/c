@@ -24,7 +24,7 @@ typedef struct Heap {
   int size, n;
 } Heap;
 
-void initHead(Heap *h, int size) {
+void initHeap(Heap *h, int size) {
   h->__data = (Node **)(malloc(sizeof(Node *) * size));
   h->data = h->__data - 1;
   h->size = size;
@@ -38,7 +38,7 @@ int cmp(Node **data, int i, int j) { return data[i]->freq < data[j]->freq; }
 
 void up_update(Node **data, int n) {
   int i = n;
-  while (i > 1 && cmp(data, father(i), i)) {
+  while (i > 1 && cmp(data, i, father(i))) {
     swap(data[father(i)], data[i]);
     i = father(i);
   }
@@ -72,7 +72,8 @@ int pushHeap(Heap *h, Node *v) {
 int popHead(Heap *h) {
   if (headpIsEmpty(h))
     return -1;
-  swap(h->data[h->n], h->data[1]);
+  //  swap(h->data[h->n], h->data[1]);
+  h->data[1] = h->data[h->n];
   h->n--;
   down_update(h->data, 1, h->n);
   return 1;
@@ -113,7 +114,7 @@ int findMinNode(Node **node_arr, int last) {
 
 Node *buildHaffmanTree(Node **node_arr, int n) {
   Heap *h = (Heap *)malloc(sizeof(Heap));
-  initHead(h, n);
+  initHeap(h, n);
   for (int i = 0; i < n; i++) {
     pushHeap(h, node_arr[i]);
   }
@@ -145,9 +146,6 @@ void extractHaffmanCode(Node *root, char *buff, int len) {
     return;
   if (!root->lchild && !root->rchild && root->ch != 0) {
     cout << root->ch << ": " << static_cast<string>(buff);
-    //    for (int i = 0; i < len; i++) {
-    //     cout << buff[i];
-    //  }
     cout << endl;
   }
   buff[len] = '0';
