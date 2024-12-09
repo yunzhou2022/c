@@ -1,8 +1,13 @@
 #include "0.test.h"
 
 void quick_sort(int *data, int l, int r) {
-  if (r - l <= 1)
+  if (r - l <= 2) {
+    if (r - l <= 1)
+      return;
+    if (data[l] > data[l + 1])
+      swap(data[l], data[l + 1]);
     return;
+  }
 
   int z = data[l], x = l, y = r - 1;
   do {

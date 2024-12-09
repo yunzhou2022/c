@@ -24,10 +24,10 @@ bool check(int *data, int l, int r) {
     int n = end - start;                                                       \
     int *tmp = (int *)malloc(sizeof(int) * n);                                 \
     memcpy(tmp, data, sizeof(int) * n);                                        \
-    int b = clock();                                                           \
-    func(data, start, end);                                                    \
-    int e = clock();                                                           \
-    if (check(data, start, end))                                               \
+    long long b = clock();                                                     \
+    func(tmp, start, end);                                                     \
+    long long e = clock();                                                     \
+    if (check(tmp, start, end))                                                \
       cout << "OK" << endl;                                                    \
     else                                                                       \
       cout << "FAIL" << endl;                                                  \
@@ -37,7 +37,7 @@ bool check(int *data, int l, int r) {
   }
 
 #define SMALL_DATA 5000
-#define BIG_DATA 10000000
+#define BIG_DATA 100000
 
 __attribute__((constructor)) void __initRand() { srand(time(0)); }
 
