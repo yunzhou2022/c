@@ -214,10 +214,14 @@ int main() {
   }
   out(root);
 
-  int x = 2;
+  int x = 1;
   // while (~scanf("%d", &x)) {
   printf("\nerase %d from red black tree\n", x);
-  root = erase(root, x);
+  root = erase(root, 1);
+  cout << endl;
+  out(root);
+  root = erase(root, 2);
+  cout << endl;
   out(root);
   //  }
 

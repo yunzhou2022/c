@@ -89,9 +89,9 @@ Node *insert_update(Node *root) {
     }
     root = left_rotate(root);
   }
-  C(root) = RED;
-  C(L(root)) = BLACK;
-  C(R(root)) = BLACK;
+  C(root) = BLACK;
+  C(L(root)) = RED;
+  C(R(root)) = RED;
   return root;
 }
 
